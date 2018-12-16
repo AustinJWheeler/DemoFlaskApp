@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-lg-4 col-md-6 py-2">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">{{item.item}}</h5>
+                    <p>{{item.description}}</p>
+                    {% canedit %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-lg-4 col-md-6 py-2">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">(Top) Categories</h5>
+                    {% for c in categories %}
+                    <a href="{{ url_for('category', name=c.name) }}">{{c.name}}</a><span style="color: gray; font-weight: lighter"> 15</span>
+                    <br/>
+					{% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
