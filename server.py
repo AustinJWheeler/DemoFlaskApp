@@ -1,4 +1,6 @@
 from secrets import token_urlsafe
+
+import requests
 from flask import Flask, render_template, request, make_response, redirect, url_for
 from database_schema import Base, User, UserSession, Category, Item
 from sqlalchemy import create_engine
@@ -56,9 +58,20 @@ def authorized(user_session):
             request.args['error_description']
         )
     email = json.loads(oauth.google.get('userinfo').text)['email']
-    # todo: new email?
+
+    user = session.query(User).filter_by(email=email).all()
+    if len(user) == 0:
+        user = User(email=email)
+        session.add(user)
+        session.commit()
+
     user_session['logged_in'] = email
     user_session['flash'].append(('success', 'you are logged in via google'))
+
+    requests.post('https://accounts.google.com/o/oauth2/revoke',
+                  params={'token': resp['access_token']},
+                  headers={'content-type': 'application/x-www-form-urlencoded'})
+
     return redirect(url_for('home'))
 
 
@@ -197,7 +210,7 @@ def forgot_password(user_session):
 @session_lookup(request, session)
 def check_email_message():
     return 'Check your email'
-    #todo: generic message screen?
+    # todo: generic message screen?
 
 
 @app.route("/set-password", endpoint='set_password', methods=['GET', 'POST'])
@@ -281,7 +294,7 @@ Subject: Verify your email
     server.login(fromaddr, email_password)
     server.sendmail(fromaddr, email, text)
     server.quit()
-    #todo: move to email py file
+    # todo: move to email py file
 
 
 @app.route("/all-categories", endpoint='all_catagories')
