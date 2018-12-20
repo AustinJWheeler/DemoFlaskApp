@@ -6,6 +6,8 @@
     <title>Home</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.1/css/all.css"
+          integrity="sha384-gfdkjb5BdAXd+lj+gudLWI+BXq4IuLW5IT+brZEZsLFm++aCMlF1V92rMkPaX4PP" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
     {% block head %}
     {% endblock %}
@@ -25,7 +27,7 @@
                     <a class="nav-link" href="{{ url_for('all_catagories') }}">Categories</a>
                 </li>
             </ul>
-            <ul class="nav navbar-nav navbar-right">
+            <ul class="nav navbar-nav navbar-right align-items-center">
                 {%if not loggedin %}
                 <li class="nav-item">
                     <a class="nav-link" href="{{ url_for('sign_up') }}">Sign Up</a>
@@ -35,7 +37,16 @@
                 </li>
                 {% else %}
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
+                    <a class="nav-link" href="{{ url_for('logout') }}">
+                        <span class="fas fa-sign-out-alt"></span>
+                        Logout
+                    </a>
+                </li>
+                <li class="nav-item pl-2">
+                    <a class="nav-link" href="{{url_for('user_settings')}}">
+                        <span class="fas fa-user"></span>
+                        Profile
+                    </a>
                 </li>
                 {% endif %}
             </ul>
@@ -43,7 +54,11 @@
     </div>
 </nav>
 
-
+<div class="container">
+    {% for f in flash %}
+    <div class="alert alert-{{f[0]}}" role="alert">{{f[1]}}</div>
+    {% endfor %}
+</div>
 
 {% block content %}
 {% endblock %}

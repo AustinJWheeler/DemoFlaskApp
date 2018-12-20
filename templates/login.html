@@ -3,7 +3,7 @@
 {% block content %}
 <div class="container">
     <div class="d-flex justify-content-center w-100 p-3">
-        <form action="{{ url_for('login') }}" method="post">
+        <form method="post">
             <div class="form-group">
                 <label for="email">Email address</label>
                 <input type="email" class="form-control" id="email"
@@ -13,6 +13,7 @@
                 <label for="password">Password</label>
                 <input type="password" name="password" class="form-control" id="password" placeholder="Password">
             </div>
+            <a href="{{url_for('')}}">Forgot password? click here</a>
             <!--<div class="form-group form-check">-->
                 <!--<input type="checkbox" class="form-check-input" id="keepMeIn" name="keep" value="yes">-->
                 <!--<label class="form-check-label" for="keepMeIn">Keep me logged in</label>-->
@@ -20,7 +21,7 @@
             <button type="submit" class="btn btn-primary">Login</button>
         </form>
 
-        <a href="/">
+        <a href="{{url_for('google_login')}}">
             <img class="google-button" alt="Sign in with Google"
                  src="{{ url_for('static', filename='btn_google_signin.png') }}">
         </a>

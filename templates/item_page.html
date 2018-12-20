@@ -8,7 +8,16 @@
                 <div class="card-body">
                     <h5 class="card-title">{{item.item}}</h5>
                     <p>{{item.description}}</p>
-                    {% canedit %}
+                    {% if canedit %}
+                    <div class="d-flex justify-content-end">
+                        <a href="{{url_for('edit', category=category, item=item.item)}}">
+                            <button type="button" class="btn btn-primary ml-1">Edit</button>
+                        </a>
+                        <a href="{{url_for('delete', category=category, item=item.item)}}">
+                            <button type="button" class="btn btn-danger ml-1">Delete</button>
+                        </a>
+                    </div>
+                    {% endif %}
                 </div>
             </div>
         </div>

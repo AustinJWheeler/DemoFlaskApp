@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-lg-4 col-md-6 py-2">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Are you sure</h5>
+                    <form method="post">
+                        <div class="d-flex justify-content-end">
+                            <a href="{{url_for('item', category=item.category, item=item.item)}}">
+                                <button type="button" class="btn btn-secondary ml-1">Cancel</button>
+                            </a>
+                            <button type="submit" class="btn btn-danger ml-1">Delete</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
