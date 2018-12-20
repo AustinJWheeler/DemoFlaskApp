@@ -30,10 +30,16 @@
             <ul class="nav navbar-nav navbar-right align-items-center">
                 {%if not loggedin %}
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('sign_up') }}">Sign Up</a>
+                    <a class="nav-link" href="{{ url_for('sign_up') }}">
+                        <span class="fas fa-user-plus"></span>
+                        Sign Up
+                    </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('login') }}">Login</a>
+                    <a class="nav-link" href="{{ url_for('login') }}">
+                        <span class="fas fa-sign-in-alt"></span>
+                        Login
+                    </a>
                 </li>
                 {% else %}
                 <li class="nav-item">

@@ -4,11 +4,8 @@ from database_schema import Base, User, UserSession, Category, Item
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 import smtplib
-import datetime
 from session_manager import session_lookup
-
 import json
-from flask import jsonify
 from authlib.flask.client import OAuth
 import bcrypt
 
@@ -116,6 +113,7 @@ def login(user_session):
 def sign_up(user_session):
     if user_session['logged_in'] is not None:
         user_session['flash'].append(('info', 'Please logout before creating a new account'))
+        return redirect(url_for('home'))
 
     if request.method == 'GET':
         return render_template("sign_up.html", **user_session['kwargs'])
@@ -171,12 +169,35 @@ def add(category, user_session):
 @app.route('/forgot-password', endpoint='forgot_password', methods=['GET', 'POST'])
 @session_lookup(request, session)
 def forgot_password(user_session):
-    return 'Forgot Password'
+    if user_session['logged_in'] is not None:
+        user_session['flash'].append(('info', 'Please logout before attempting an account recovery'))
+        return redirect(url_for('home'))
+
+    if request.method == 'GET':
+        return render_template("forgot_password.html", **user_session['kwargs'])
+
+    user = session.query(User).filter_by(email=request.form['email']).all()
+    if len(user) == 0:
+        user_session['flash'].append(
+            ('danger', 'There is no account with this email address'))
+        return redirect(url_for('forgot_password'))
+    user = user[0]
+
+    user.email_verification_token = token_urlsafe(32)
+
+    send_verification_email(
+        user.email, url_for('set_password', _external=True) + '?token=' + user.email_verification_token)
+
+    session.commit()
+
+    return redirect(url_for('check_email_message'))
 
 
-@app.route("/check-email")
+@app.route("/check-email", endpoint='check_email_message')
+@session_lookup(request, session)
 def check_email_message():
     return 'Check your email'
+    #todo: generic message screen?
 
 
 @app.route("/set-password", endpoint='set_password', methods=['GET', 'POST'])
@@ -186,9 +207,8 @@ def set_password(user_session):
     user = session.query(User).filter_by(email_verification_token=token).one()
 
     if request.method == 'GET':
-        if user.password is None:
-            return render_template("initial_password_set.html", token=token)
-        return render_template("password_reset.html", token=token)
+        message = 'Please set your password' if user.password is None else 'Enter a new password'
+        return render_template("password_reset.html", token=token, message=message, **user_session['kwargs'])
 
     user.password = bcrypt.hashpw(request.form['password'].encode('utf-8'), bcrypt.gensalt())
     session.commit()
@@ -196,11 +216,12 @@ def set_password(user_session):
     return redirect(url_for('login'))
 
 
-@app.route('/category/<name>/')
-def category(name):
+@app.route('/category/<name>/', endpoint='category')
+@session_lookup(request, session)
+def category(name, user_session):
     c = session.query(Category).filter_by(name=name).one()
     items = session.query(Item).filter_by(category=name).all()
-    return render_template('category_page.html', name=c.name, category=name, items=items)
+    return render_template('category_page.html', name=c.name, category=name, items=items, **user_session['kwargs'])
 
 
 @app.route('/item/<category>/<item>', endpoint='item')
@@ -208,7 +229,7 @@ def category(name):
 def item(category, item, user_session):
     item = session.query(Item).filter_by(category=category, item=item).one()
     return render_template('item_page.html', category=category, item=item,
-                           canedit=item.user_email == user_session['logged_in'])
+                           canedit=item.user_email == user_session['logged_in'], **user_session['kwargs'])
 
 
 @app.route('/edit/<category>/<item>', endpoint='edit', methods=['GET', 'POST'])
@@ -219,7 +240,7 @@ def edit(category, item, user_session):
         return redirect(url_for('login'))
     if request.method == 'GET':
         return render_template('edit_page.html', category=category, item=item,
-                               canedit=item.user_email == user_session['logged_in'])
+                               canedit=item.user_email == user_session['logged_in'], **user_session['kwargs'])
     item.item = request.form['item']
     item.description = request.form['description']
     session.commit()
@@ -234,7 +255,7 @@ def delete(category, item, user_session):
         return redirect(url_for('login'))
     if request.method == 'GET':
         return render_template('delete_page.html', category=category, item=item,
-                               canedit=item.user_email == user_session['logged_in'])
+                               canedit=item.user_email == user_session['logged_in'], **user_session['kwargs'])
     session.delete(item)
     session.commit()
     user_session['flash'].append(('success', item.item + ' has been deleted'))
@@ -260,12 +281,14 @@ Subject: Verify your email
     server.login(fromaddr, email_password)
     server.sendmail(fromaddr, email, text)
     server.quit()
+    #todo: move to email py file
 
 
-@app.route("/all-categories")
-def all_catagories():
+@app.route("/all-categories", endpoint='all_catagories')
+@session_lookup(request, session)
+def all_catagories(user_session):
     categories = session.query(Category).all()
-    return render_template('all_catagories.html', categories=categories)
+    return render_template('all_catagories.html', categories=categories, **user_session['kwargs'])
 
 
 if __name__ == "__main__":
