@@ -1,11 +1,6 @@
-{% extends "base.html" %}
+{% extends "single_card.html" %}
 
-{% block content %}
-<div class="container">
-    <div class="row">
-        <div class="col-lg-4 col-md-6 py-2">
-            <div class="card">
-                <div class="card-body">
+{% block card %}
                     <h5 class="card-title">{{item.item}}</h5>
                     <p>{{item.description}}</p>
                     {% if canedit %}
@@ -18,9 +13,4 @@
                         </a>
                     </div>
                     {% endif %}
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 {% endblock %}

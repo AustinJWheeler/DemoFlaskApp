@@ -27,14 +27,8 @@
                     <a class="nav-link" href="{{ url_for('all_catagories') }}">Categories</a>
                 </li>
             </ul>
-            <ul class="nav navbar-nav navbar-right align-items-center">
+            <ul class="nav navbar-nav navbar-right">
                 {%if not loggedin %}
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('sign_up') }}">
-                        <span class="fas fa-user-plus"></span>
-                        Sign Up
-                    </a>
-                </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{{ url_for('login') }}">
                         <span class="fas fa-sign-in-alt"></span>
@@ -46,12 +40,6 @@
                     <a class="nav-link" href="{{ url_for('logout') }}">
                         <span class="fas fa-sign-out-alt"></span>
                         Logout
-                    </a>
-                </li>
-                <li class="nav-item pl-2">
-                    <a class="nav-link" href="{{url_for('user_settings')}}">
-                        <span class="fas fa-user"></span>
-                        Profile
                     </a>
                 </li>
                 {% endif %}

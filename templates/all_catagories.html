@@ -1,19 +1,16 @@
-{% extends "base.html" %}
+{% extends "single_card.html" %}
 
-{% block content %}
-<div class="container">
-    <div class="row">
-        <div class="col-lg-4 col-md-6 py-2">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">(Top) Categories</h5>
-                    {% for c in categories %}
-                    <a href="{{ url_for('category', name=c.name) }}">{{c.name}}</a><span style="color: gray; font-weight: lighter"> 15</span>
-                    <br/>
-					{% endfor %}
-                </div>
-            </div>
-        </div>
-    </div>
+{% block card %}
+<h5 class="card-title">Categories</h5>
+{% for c in categories %}
+<a href="{{ url_for('category', name=c.name) }}">{{c.name}}</a>
+<br/>
+{% endfor %}
+{%if loggedin %}
+<div class="d-flex justify-content-end">
+    <a href="{{url_for('add')}}">
+        <button type="button" class="btn btn-primary ml-1">Add Item</button>
+    </a>
 </div>
+{% endif %}
 {% endblock %}

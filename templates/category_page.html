@@ -1,26 +1,9 @@
-{% extends "base.html" %}
+{% extends "single_card.html" %}
 
-{% block content %}
-<div class="container">
-    <div class="row">
-        <div class="col-lg-4 col-md-6 py-2">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">{{name}}</h5>
-                    {% for item in items %}
-                    <a href="{{url_for('item', category=item.category, item=item.item)}}">{{item.item}}</a>
-                    <br/>
-                    {% endfor %}
-                    {%if loggedin %}
-                    <div class="d-flex justify-content-end">
-                        <a href="{{url_for('add', category=category)}}">
-                            <button type="button" class="btn btn-primary ml-1">Add Item</button>
-                        </a>
-                    </div>
-                    {% endif %}
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+{% block card %}
+<h5 class="card-title">{{name}}</h5>
+{% for item in items %}
+<a href="{{url_for('item', category=item.category, item=item.item)}}">{{item.item}}</a>
+<br/>
+{% endfor %}
 {% endblock %}
