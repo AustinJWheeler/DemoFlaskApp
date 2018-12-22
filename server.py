@@ -47,17 +47,17 @@ def home(user_session):
                            **user_session['kwargs'])
 
 
-@app.route("/all-categories", endpoint='all_catagories')
+@app.route("/all-categories", endpoint='all_categories')
 @session_lookup(request, session)
-def all_catagories(user_session):
+def all_categories(user_session):
     categories = session.query(Category).all()
-    return render_template('all_catagories.html', categories=categories,
+    return render_template('all_categories.html', categories=categories,
                            **user_session['kwargs'])
 
 
-@app.route("/all-categories.json", endpoint='all_catagories_json')
+@app.route("/all-categories.json", endpoint='all_categories_json')
 @session_lookup(request, session)
-def all_catagories_json(user_session):
+def all_categories_json(user_session):
     categories = session.query(Category).all()
     return jsonify(categories=[c.serialize for c in categories])
 
@@ -90,10 +90,11 @@ def add(user_session):
         return render_template('add_item.html', categories=categories,
                                **user_session['kwargs'])
     if len(session.query(Item).filter_by(
-            category=category, item=request.form['item']).all()) != 0:
+            category=request.form['category'],
+            item=request.form['item']).all()) != 0:
         user_session['flash'].append(
             ('danger', 'An item with this name already exists'))
-        return redirect(url_for('category', category=category))
+        return redirect(url_for('all_categories'))
 
     newItem = Item(
         category=request.form['category'],
