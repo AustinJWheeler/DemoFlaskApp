@@ -1,5 +1,5 @@
 from secrets import token_urlsafe
-from flask import make_response
+from flask import make_response, Response
 from database_schema import UserSession
 import datetime
 
@@ -13,7 +13,13 @@ def session_lookup(request, db_session):
             now = datetime.datetime.now()
             if 'session_id' in request.cookies:
                 record = db_session.query(UserSession).filter_by(
-                    id=request.cookies['session_id']).one()
+                    id=request.cookies['session_id']).all()
+                if len(record) == 0:
+                    response = Response(response='Server Error',
+                                        status='500 Internal Server Error')
+                    response.set_cookie('session_id', '', expires=now)
+                    return response
+                record = record[0]
                 if record.login_exp_time is not None and \
                         record.login_exp_time > now:
                     session['logged_in'] = record.user_email
