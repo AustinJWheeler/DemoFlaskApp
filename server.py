@@ -190,6 +190,8 @@ def authorized(user_session):
     user_session['logged_in'] = email
     user_session['flash'].append(('success', 'you are logged in via google'))
 
+    # after the initial authentication, the token is not longer needed
+    # here we revoke it
     requests.post('https://accounts.google.com/o/oauth2/revoke',
                   params={'token': resp['access_token']},
                   headers={

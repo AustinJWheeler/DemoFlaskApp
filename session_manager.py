@@ -3,6 +3,11 @@ from flask import make_response, Response
 from database_schema import UserSession
 import datetime
 
+'''
+The session manager is a decorator factory used to handle cookie and
+ session state for almost all routes.
+'''
+
 
 def session_lookup(request, db_session):
     def manage_session(f):
@@ -49,6 +54,8 @@ def session_lookup(request, db_session):
     return manage_session
 
 
+# This method and the one after it are used to store
+#   flash data in the user_session table.
 def to_string(lis):
     i = []
     for x in lis:
