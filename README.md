@@ -10,7 +10,7 @@ pip3 install  flask authlib sqlalchemy requests
 ## Downloading and Running
 1) Pull the code from git `git clone https://github.com/AustinJWheeler/DemoFlaskApp.git`
 2) Configure your redirect uris in the [google api console](https://console.developers.google.com/apis/credentials). The catalog app uses the redirect path `/callback`. If you running this on you local machine with the default port of 5000, you'll need to add the redirect uri `http://localhost:5000/callback`
-3) Download your client secrets from the google api console and rename the file to `client_secrets.json` before placing it in the project direcroty next to `server.py`
+3) Download your client secrets from the google api console and rename the file to `client_secrets.json` before placing it in the project directory next to `server.py`
 4) Run the command `python3 server.py` from the project directory to start the server
 
 ## Populating the database
